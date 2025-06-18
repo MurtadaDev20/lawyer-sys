@@ -1,6 +1,6 @@
 <div>
 
-
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen legal-pattern">
 <div class="min-h-screen flex items-center justify-center p-4">
         <div class="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
             <!-- Logo and Title -->
@@ -15,50 +15,44 @@
             </div>
 
             <!-- Login Form -->
-            <form class="mt-8 space-y-6" action="lawyer-dashboard.html">
-                <div class="space-y-4">
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">البريد الإلكتروني</label>
-                        <div class="mt-1 relative">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
-                                </svg>
-                            </div>
-                            <input id="email" name="email" type="email" required class="appearance-none block w-full pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm" placeholder="example@lawfirm.com">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">كلمة المرور</label>
-                        <div class="mt-1 relative">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                                </svg>
-                            </div>
-                            <input id="password" name="password" type="password" required class="appearance-none block w-full pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm" placeholder="••••••••">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
-                        <label for="remember-me" class="mr-2 block text-sm text-gray-700 dark:text-gray-300">تذكرني</label>
-                    </div>
-
-                    <div class="text-sm">
-                        <a href="#" class="font-medium text-primary-600 hover:text-primary-500">نسيت كلمة المرور؟</a>
-                    </div>
-                </div>
-
+            <!-- Livewire Form -->
+        <form wire:submit.prevent="login" class="mt-8 space-y-6">
+            <div class="space-y-4">
+                <!-- Phone Field -->
                 <div>
-                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                        تسجيل الدخول
-                    </button>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">رقم الهاتف</label>
+                    <input wire:model="phone" id="phone" name="phone" type="text"
+                        class="mt-1 block w-full pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                        placeholder="077********">
+                    @error('phone') <span class="text-sm text-red-500">{{ $message }}</span> @enderror
                 </div>
-            </form>
+
+                <!-- Password Field -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">كلمة المرور</label>
+                    <input wire:model="password" id="password" name="password" type="password"
+                        class="mt-1 block w-full pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                        placeholder="••••••••">
+                    @error('password') <span class="text-sm text-red-500">{{ $message }}</span> @enderror
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <label class="flex items-center">
+                    <input type="checkbox" wire:model="remember" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                    <span class="mr-2 text-sm text-gray-700 dark:text-gray-300">تذكرني</span>
+                </label>
+
+                <a href="{{ route('edara.reset-password') }}" wire:navigate class="text-sm text-primary-600 hover:text-primary-500">نسيت كلمة المرور؟</a>
+            </div>
+
+            <button type="submit"
+                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none">
+                تسجيل الدخول
+            </button>
+
+           
+        </form>
 
             <!-- Legal Icons -->
             <div class="mt-8 grid grid-cols-3 gap-4">
