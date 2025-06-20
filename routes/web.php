@@ -17,7 +17,7 @@ Route::group(['prefix' => 'edara',], function () {
     Route::group(['prefix' => 'auth' , ], function () {
         Route::get('/login', LoginEdara::class)->name('edara.login');
         Route::get('/reset-password',ResetPassword::class)->name('edara.reset-password');
-        Route::get('/otp-verification',OtpVerification::class)->name('edara.otp-verification');
+        Route::get('/otp-verification',OtpVerification::class)->name('edara.otp-verification')->middleware('auth');
     });
 });
 

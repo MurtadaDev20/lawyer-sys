@@ -9,11 +9,14 @@ use App\Traits\SendsOtp;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Validate;
+use Livewire\Attributes\Layout;
 
 class LoginEdara extends Component
 {
-     use SendsOtp;
-    
+     
+    use SendsOtp;
+
+    #[Layout('components.layouts.edara.login')] 
     public $phone;
     public $password;
     public $remember = false;
@@ -45,7 +48,7 @@ class LoginEdara extends Component
             $user = User::where('phone', $phoneNumber)->first();
 
             if (!$user->is_verified) {
-                Auth::logout();
+                // Auth::logout();
                 
                 // Use the trait method
                 if ($this->sendOtp($user)) {
@@ -62,6 +65,7 @@ class LoginEdara extends Component
         return toastr()->error('بيانات الدخول غير صحيحة.');
     }
 
+    
     public function render()
     {
         return view('livewire.edara.auth.login-edara');

@@ -14,13 +14,26 @@
 
         <!-- OTP Verification Form -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-            <form class="space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">أدخل الرمز المرسل إلى رقم الهاتف </label>
-                    <div class="flex gap-2 justify-center">
-                        <input type="text" maxlength="6" pattern="[0-9]" inputmode="numeric" class=" text-center text-2xl font-bold rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent" required>
-                        
+            <form wire:submit.prevent="verifyOtp" class="space-y-6">
+                @if (session()->has('message'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                        {{ session('message') }}
                     </div>
+                @endif
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">أدخل الرمز المرسل إلى رقم الهاتف</label>
+                    <div class="flex gap-2 justify-center">
+                        <input 
+                            type="text" 
+                            wire:model="otp"
+                            maxlength="6" 
+                            inputmode="numeric" 
+                            class="text-center text-2xl font-bold rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent" 
+                            
+                        >
+                    </div>
+                    @error('otp') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
                 <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
@@ -30,11 +43,16 @@
                 <div class="text-center space-y-4">
                     <p class="text-sm text-gray-600 dark:text-gray-400">
                         لم يصلك الرمز؟
-                        <button type="button" class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
+                        <button 
+                            type="button" 
+                            wire:click="resendOtps"
+                            @if($resendDisabled) disabled @endif
+                            class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium @if($resendDisabled) opacity-50 cursor-not-allowed @endif"
+                        >
                             إعادة الإرسال
                         </button>
                     </p>
-                    <a href="login.html" class="block text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
+                    <a href="{{ route('edara.login') }}" class="block text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
                         العودة إلى تسجيل الدخول
                     </a>
                 </div>
@@ -45,28 +63,35 @@
         <div class="text-center mt-6">
             <p class="text-sm text-gray-600 dark:text-gray-400">
                 يمكنك طلب رمز جديد بعد
-                <span class="font-medium text-primary-600 dark:text-primary-400">02:59</span>
+                <span class="font-medium text-primary-600 dark:text-primary-400">
+                    {{ gmdate('i:s', $countdown) }}
+                </span>
             </p>
         </div>
     </div>
 
+    
     <script>
-        // Auto-focus next input when a digit is entered
-        const inputs = document.querySelectorAll('input[type="text"]');
-        inputs.forEach((input, index) => {
-            input.addEventListener('input', (e) => {
-                if (e.target.value.length === 1) {
-                    if (index < inputs.length - 1) {
-                        inputs[index + 1].focus();
-                    }
-                }
+        document.addEventListener('livewire:init', function() {
+            let timer;
+
+            // Start timer when event received
+            Livewire.on('start-otp-timer', () => {
+                clearInterval(timer); // Clear any existing timer
+                timer = setInterval(() => {
+                    @this.decrementCountdown();
+                }, 1000);
             });
 
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                    inputs[index - 1].focus();
-                }
+            // Stop timer when event received
+            Livewire.on('stop-timer', () => {
+                clearInterval(timer);
+            });
+
+            // Start initial timer when component loads
+            Livewire.on('component-mounted', () => {
+                Livewire.dispatch('start-otp-timer');
             });
         });
-    </script>
+</script>
 </div>
