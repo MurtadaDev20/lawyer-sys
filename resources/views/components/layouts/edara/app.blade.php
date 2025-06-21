@@ -3,6 +3,5 @@
     
         {{ $slot }}
         
-    </body>
-@livewireScripts
+    
 @include('components.layouts.edara.body.footer')

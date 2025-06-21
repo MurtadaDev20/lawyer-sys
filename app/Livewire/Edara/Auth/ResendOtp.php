@@ -5,11 +5,12 @@ namespace App\Livewire\Edara\Auth;
 use App\Models\User;
 use App\Traits\SendsOtp;
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 
 class ResendOtp extends Component
 {
     use SendsOtp;
-
+    #[Layout('components.layouts.edara.login')] 
     protected $listeners = [
         'resend-otp-request' => 'handleResendRequest'
     ];

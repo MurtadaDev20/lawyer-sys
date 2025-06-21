@@ -6,10 +6,12 @@ use Livewire\Component;
 use App\Models\UserOtp;
 use Illuminate\Support\Facades\Auth;
 use Twilio\TwiML\Voice\Stop;
+use Livewire\Attributes\Layout;
 
 class OtpVerification extends Component
 {
-     public $otp = '';
+    #[Layout('components.layouts.edara.login')] 
+    public $otp = '';
     public $countdown = 5; // 3 minutes in seconds
     public $resendDisabled = true;
 

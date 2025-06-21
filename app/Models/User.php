@@ -26,6 +26,7 @@ class User extends Authenticatable
         'address',
         'is_active',
         'active_at',
+        'expired_at',
         'is_verified',
     ];
 

@@ -4,6 +4,8 @@ use App\Livewire\Admin\Auth\Login;
 use App\Livewire\Edara\Auth\LoginEdara;
 use App\Livewire\Edara\Auth\OtpVerification;
 use App\Livewire\Edara\Auth\ResetPassword;
+use App\Livewire\Edara\Main\Dashboard;
+use App\Livewire\Edara\Main\Lawyer;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,6 +20,12 @@ Route::group(['prefix' => 'edara',], function () {
         Route::get('/login', LoginEdara::class)->name('edara.login');
         Route::get('/reset-password',ResetPassword::class)->name('edara.reset-password');
         Route::get('/otp-verification',OtpVerification::class)->name('edara.otp-verification')->middleware('auth');
+    });
+
+    // Admin routes
+    Route::group(['middleware' =>  ['auth']], function () {
+        Route::get('/dashboard', Dashboard::class)->name('edara.dashboard');
+        Route::get('/lawyer-manage', Lawyer::class)->name('edara.lawyerManage');
     });
 });
 

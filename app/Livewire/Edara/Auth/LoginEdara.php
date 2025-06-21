@@ -2,14 +2,15 @@
 
 namespace App\Livewire\Edara\Auth;
 
-use App\Helpers\PhoneCleanerHelper;
 use App\Models\User;
-use App\Notifications\SendOtpNotification;
-use App\Traits\SendsOtp;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Validate;
+use App\Traits\SendsOtp;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
+use App\Helpers\PhoneCleanerHelper;
+use Illuminate\Support\Facades\Auth;
+use App\Notifications\SendOtpNotification;
 
 class LoginEdara extends Component
 {
@@ -17,6 +18,7 @@ class LoginEdara extends Component
     use SendsOtp;
 
     #[Layout('components.layouts.edara.login')] 
+    #[Title('تسجيل الدخول')] 
     public $phone;
     public $password;
     public $remember = false;
@@ -47,6 +49,10 @@ class LoginEdara extends Component
         if (Auth::attempt($credentials, $this->remember)) {
             $user = User::where('phone', $phoneNumber)->first();
 
+            if(!$user->is_active) {
+                Auth::logout();
+                return toastr()->error('حسابك غير مفعل، يرجى التواصل مع الإدارة.');
+            }
             if (!$user->is_verified) {
                 // Auth::logout();
                 
@@ -59,7 +65,8 @@ class LoginEdara extends Component
                 return back()->with('error', 'فشل إرسال رمز التحقق، يرجى المحاولة مرة أخرى.');
             }
 
-            return toastr()->success('تم تسجيل الدخول بنجاح.');
+            return redirect()->route('edara.dashboard');
+             toastr()->success('تم تسجيل الدخول بنجاح.');
         }
 
         return toastr()->error('بيانات الدخول غير صحيحة.');
