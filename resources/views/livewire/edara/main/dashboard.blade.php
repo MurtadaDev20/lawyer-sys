@@ -2,7 +2,7 @@
     <!-- Main Content -->
     <main class="md:mr-72 p-4 md:p-8">
         <!-- Top Bar -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
+        {{-- <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0">
             <h1 class="text-2xl font-bold">التقارير والإحصائيات</h1>
             <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 w-full md:w-auto">
                 <select class="px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
@@ -15,31 +15,118 @@
                     تصدير التقرير
                 </button>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
-                <h3 class="text-lg font-medium mb-2">إجمالي القضايا</h3>
-                <p class="text-3xl font-bold text-primary-600">156</p>
-                <p class="text-sm text-gray-500 mt-2">+12% من الشهر الماضي</p>
-            </div>
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
-                <h3 class="text-lg font-medium mb-2">القضايا النشطة</h3>
-                <p class="text-3xl font-bold text-primary-600">45</p>
-                <p class="text-sm text-gray-500 mt-2">+5% من الشهر الماضي</p>
-            </div>
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
-                <h3 class="text-lg font-medium mb-2">عدد العملاء</h3>
-                <p class="text-3xl font-bold text-primary-600">{{ \App\Models\User::role('Customer')->count() }}</p>
-                <p class="text-sm text-gray-500 mt-2">+8% من الشهر الماضي</p>
-            </div>
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
-                <h3 class="text-lg font-medium mb-2">عدد المحاميين</h3>
-                <p class="text-3xl font-bold text-primary-600">{{ \App\Models\User::role('lawyer')->count() }}</p>
-                <p class="text-sm text-gray-500 mt-2">+2 من الشهر الماضي</p>
-            </div>
+        <!-- إحصائيات المستخدمين -->
+<div class="mb-8">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">إحصائيات المستخدمين</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">مجموع المستخدمين</h3>
+            <p class="text-3xl font-bold text-primary-600">{{ \App\Models\User::count() }}</p>
+            <p class="text-sm text-gray-500 mt-2">+8% من الشهر الماضي</p>
         </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">عدد موظفي الادارة</h3>
+            <p class="text-3xl font-bold text-primary-600">{{ \App\Models\User::role('Edara')->count() }}</p>
+            <p class="text-sm text-gray-500 mt-2">+8% من الشهر الماضي</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">عدد العملاء</h3>
+            <p class="text-3xl font-bold text-primary-600">{{ \App\Models\User::role('Customer')->count() }}</p>
+            <p class="text-sm text-gray-500 mt-2">+8% من الشهر الماضي</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">عدد المحامين</h3>
+            <p class="text-3xl font-bold text-primary-600">{{ \App\Models\User::role('lawyer')->count() }}</p>
+            <p class="text-sm text-gray-500 mt-2">+2 من الشهر الماضي</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">عدد المحامين المفعلين</h3>
+            <p class="text-3xl font-bold text-primary-600">{{ \App\Models\User::role('lawyer')->where('is_active', true)->count() }}</p>
+            <p class="text-sm text-gray-500 mt-2">+2 من الشهر الماضي</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">عدد المحامين غير المفعلين</h3>
+            <p class="text-3xl font-bold text-red-600">{{ \App\Models\User::role('lawyer')->where('is_active', false)->count() }}</p>
+            <p class="text-sm text-gray-500 mt-2">+2 من الشهر الماضي</p>
+        </div>
+        @php
+            $todayLawyers = \App\Models\User::role('lawyer')
+                ->whereDate('created_at', today())
+                ->count();
+        @endphp
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">محامون جدد اليوم</h3>
+            <p class="text-3xl font-bold text-green-600">{{ $todayLawyers }}</p>
+            <p class="text-sm text-gray-500 mt-2">تم تسجيلهم خلال اليوم الحالي</p>
+        </div>
+    </div>
+</div>
+
+<!-- إحصائيات الاشتراكات -->
+<div class="mb-8">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">إحصائيات الاشتراكات</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">عدد المحامين المنتهية صلاحيتهم</h3>
+            <p class="text-3xl font-bold text-red-600">{{ \App\Models\User::role('lawyer')->where('expired_at', '<=', now())->count() }}</p>
+            <p class="text-sm text-gray-500 mt-2">+2 من الشهر الماضي</p>
+        </div>
+        @php
+            $totalLawyers = \App\Models\User::role('lawyer')->count();
+            $activeLawyers = \App\Models\User::role('lawyer')
+                ->where('active_at', '<=', now())
+                ->where('expired_at', '>=', now())
+                ->count();
+            $activePercentage = $totalLawyers > 0 ? round(($activeLawyers / $totalLawyers) * 100, 1) : 0;
+        @endphp
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">نسبة المحامين النشطين</h3>
+            <p class="text-3xl font-bold text-primary-600">{{ $activePercentage }}%</p>
+            <p class="text-sm text-gray-500 mt-2">نسبة محدثة حسب الوقت الحالي</p>
+        </div>
+        @php
+            $expiringSoon = \App\Models\User::role('lawyer')
+                ->whereDate('expired_at', '>=', now())
+                ->whereDate('expired_at', '<=', now()->addDays(7))
+                ->count();
+        @endphp
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">محامون تنتهي صلاحيتهم خلال 7 أيام</h3>
+            <p class="text-3xl font-bold text-red-600">{{ $expiringSoon }}</p>
+            <p class="text-sm text-gray-500 mt-2">تحقق من تجديد الاشتراك</p>
+        </div>
+    </div>
+</div>
+
+<!-- إحصائيات القضايا والملفات -->
+<div class="mb-8">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">إحصائيات القضايا والملفات</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">إجمالي القضايا</h3>
+            <p class="text-3xl font-bold text-primary-600">156</p>
+            <p class="text-sm text-gray-500 mt-2">+12% من الشهر الماضي</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">القضايا النشطة</h3>
+            <p class="text-3xl font-bold text-primary-600">45</p>
+            <p class="text-sm text-gray-500 mt-2">+5% من الشهر الماضي</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">عدد الفولدرات</h3>
+            <p class="text-3xl font-bold text-primary-600">45</p>
+            <p class="text-sm text-gray-500 mt-2">+5% من الشهر الماضي</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 md:p-6">
+            <h3 class="text-lg font-medium mb-2">عدد الملفات</h3>
+            <p class="text-3xl font-bold text-primary-600">45</p>
+            <p class="text-sm text-gray-500 mt-2">+5% من الشهر الماضي</p>
+        </div>
+    </div>
+</div>
 
         <!-- Charts -->
         {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -89,7 +176,7 @@
         </div>
 
         <!-- Reports Grid -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl shadow-md p-4 md:p-6">
+        {{-- <div class="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl shadow-md p-4 md:p-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 <!-- Report Card -->
                 <div class="bg-white dark:bg-gray-700 rounded-xl shadow-sm p-4 md:p-6 border border-gray-200 dark:border-gray-600">
@@ -179,6 +266,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </main>
 </div>

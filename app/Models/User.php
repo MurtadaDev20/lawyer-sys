@@ -22,12 +22,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'lawyer_id',
         'phone',
         'address',
         'is_active',
         'active_at',
         'expired_at',
         'is_verified',
+
     ];
 
     /**
@@ -53,5 +55,10 @@ class User extends Authenticatable
             'is_active' => 'boolean',
             'is_verified' => 'boolean',
         ];
+    }
+
+    public function lawyer()
+    {
+        return $this->belongsTo(User::class, 'lawyer_id');
     }
 }

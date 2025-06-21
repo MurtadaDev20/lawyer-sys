@@ -11,13 +11,12 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Lawyer extends Component
-{
-     use WithPagination;
-    #[Title('إدارة المحامين')] 
-    public $name, $email, $phone, $address, $password ,
-        $statusFilter = 'all'; // Default filter for all statuses
-    public $lawyerId;
+class Customer extends Component
+{ use WithPagination;
+    #[Title('إدارة العملاء')] 
+    public $name, $email, $phone, $address, $password , $lower_id,
+        $statusFilter = 'all' , $lawyerFilter ;
+    public $customerId;
     public $active_at, $expired_at;
     public $isModalOpen = false;
     public $search = '';
@@ -25,10 +24,10 @@ class Lawyer extends Component
     public function rules(){
         return [
             'name' => 'required|string|max:255',
-            'email' => ['nullable', 'email', Rule::unique('users')->ignore($this->lawyerId)],
+            'email' => ['nullable', 'email', Rule::unique('users')->ignore($this->customerId)],
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:255',
-            'password' => 'required_if:lawyerId,null|string|min:8|nullable',
+            'password' => 'required_if:customerId,null|string|min:8|nullable',
             'active_at' => 'required|date',
             'expired_at' => 'required|date|after:active_at',
         ];
@@ -55,8 +54,8 @@ class Lawyer extends Component
     public function render()
     {
         $now = now();
-
-        $lawyers = User::role('lawyer')
+        $lawyers = User::role('lawyer')->where('is_active' ,true)->get();
+        $customers = User::role('Customer')
             ->when($this->search, function ($query) {
                 $query->where(function($q) {
                     $q->where('name', 'like', '%'.$this->search.'%')
@@ -75,10 +74,14 @@ class Lawyer extends Component
                     $query->where('is_active', '=', false);
                 }
             })
+            ->when($this->lawyerFilter, function ($query) {
+                $query->where('lawyer_id', $this->lawyerFilter);
+            })
             ->latest()
             ->paginate(10);
 
-        return view('livewire.edara.main.lawyer', [
+        return view('livewire.edara.main.customer', [
+            'customers' => $customers,
             'lawyers' => $lawyers,
             'cities' => ['بغداد', 'البصرة', 'النجف', 'أربيل', 'كركوك', 'الموصل'],
         ]);
@@ -102,7 +105,7 @@ class Lawyer extends Component
     {
         $this->reset([
             'name', 'email', 'phone', 'address', 'password', 
-            'active_at', 'expired_at', 'lawyerId'
+            'active_at', 'expired_at', 'customerId'
         ]);
         $this->resetErrorBag();
     }
@@ -119,6 +122,7 @@ class Lawyer extends Component
             'email' => $this->email,
             'phone' => $phoneNumber,
             'address' => $this->address,
+            'lawyer_id' => $this->lower_id,
             'active_at' => $this->active_at,
             'expired_at' => $this->expired_at,
         ];
@@ -126,48 +130,48 @@ class Lawyer extends Component
             $data['password'] = Hash::make($this->password);
         }
 
-        $user = User::updateOrCreate(['id' => $this->lawyerId], $data);
+        $user = User::updateOrCreate(['id' => $this->customerId], $data);
 
         // Assign lawyer role if not already assigned
-        if (!$user->hasRole('lawyer')) {
-            $user->assignRole('lawyer');
+        if (!$user->hasRole('Customer')) {
+            $user->assignRole('Customer');
         }
 
-        toastr()->success( 'تم إضافة المحامي بنجاح');
+        toastr()->success( 'تم إضافة العميل بنجاح');
         $this->closeModal();
         $this->resetInputFields();
     }
 
     public function edit($id)
     {
-        $lawyer = User::findOrFail($id);
-        $this->lawyerId = $lawyer->id;
-        $this->name = $lawyer->name;
-        $this->email = $lawyer->email;
-        $this->phone = $lawyer->phone;
-        $this->address = $lawyer->address;
-        $this->active_at = $lawyer->active_at ? Carbon::parse($lawyer->active_at)->format('Y-m-d') : '';
-        $this->expired_at = $lawyer->expired_at ? Carbon::parse($lawyer->expired_at)->format('Y-m-d') : '';
+        $customers = User::findOrFail($id);
+        $this->customerId = $customers->id;
+        $this->name = $customers->name;
+        $this->email = $customers->email;
+        $this->phone = $customers->phone;
+        $this->address = $customers->address;
+        $this->active_at = $customers->active_at ? Carbon::parse($customers->active_at)->format('Y-m-d') : '';
+        $this->expired_at = $customers->expired_at ? Carbon::parse($customers->expired_at)->format('Y-m-d') : '';
         $this->openModal();
     }
     public function delete($id)
     {
-        $lawyer = User::findOrFail($id);
-        $lawyer->delete();
+        $customer = User::findOrFail($id);
+        $customer->delete();
 
-        toastr()->success('تم حذف المحامي بنجاح');
+        toastr()->success('تم حذف العميل بنجاح');
     }
 
     // Helper method to get status
-    public function getStatus($lawyer)
+    public function getStatus($customer)
     {
         $now = now();
-        $expiredAt = Carbon::parse($lawyer->expired_at);
-        $activeAt = Carbon::parse($lawyer->active_at);
+        $expiredAt = Carbon::parse($customer->expired_at);
+        $activeAt = Carbon::parse($customer->active_at);
 
         if ($now->gt($expiredAt)) {
             return ['text' => 'منتهي', 'class' => 'bg-red-500 text-red-800 dark:bg-red-900 dark:text-red-100'];
-        } elseif ($now->lt($activeAt) || !$lawyer->is_active) {
+        } elseif ($now->lt($activeAt) || !$customer->is_active) {
             return ['text' => 'غير مفعل', 'class' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100'];
         } else {
             return ['text' => 'نشط', 'class' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100'];
@@ -176,21 +180,20 @@ class Lawyer extends Component
 
     public function activate($id)
     {
-        $lawyer = User::findOrFail($id);
-        $lawyer->is_active = true;
-        $lawyer->active_at = now();
+        $customer = User::findOrFail($id);
+        $customer->is_active = true;
+        $customer->active_at = now();
         // $lawyer->expired_at = now()->addYear();
-        $lawyer->save();
+        $customer->save();
 
-        toastr()->success('تم تفعيل المحامي بنجاح');
+        toastr()->success('تم تفعيل العميل بنجاح');
     }
     public function deactivate($id)
     {
-        $lawyer = User::findOrFail($id);
-        $lawyer->is_active = false;
-        $lawyer->save();
+        $customer = User::findOrFail($id);
+        $customer->is_active = false;
+        $customer->save();
 
-        toastr()->success('تم إلغاء تفعيل المحامي بنجاح');
+        toastr()->success('تم إلغاء تفعيل العميل بنجاح');
     }
-
 }

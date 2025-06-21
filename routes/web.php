@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Middleware\EnsureEdaraIsAuthenticated;
 use App\Livewire\Admin\Auth\Login;
 use App\Livewire\Edara\Auth\LoginEdara;
 use App\Livewire\Edara\Auth\OtpVerification;
 use App\Livewire\Edara\Auth\ResetPassword;
+use App\Livewire\Edara\Main\Customer;
 use App\Livewire\Edara\Main\Dashboard;
 use App\Livewire\Edara\Main\Lawyer;
 use Illuminate\Support\Facades\Route;
@@ -23,9 +25,10 @@ Route::group(['prefix' => 'edara',], function () {
     });
 
     // Admin routes
-    Route::group(['middleware' =>  ['auth']], function () {
+    Route::middleware([EnsureEdaraIsAuthenticated::class])->group( function () {
         Route::get('/dashboard', Dashboard::class)->name('edara.dashboard');
         Route::get('/lawyer-manage', Lawyer::class)->name('edara.lawyerManage');
+        Route::get('/customer-manage', Customer::class)->name('edara.customerManage');
     });
 });
 
