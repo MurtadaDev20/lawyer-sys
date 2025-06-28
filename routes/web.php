@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureEdaraIsAuthenticated;
+use App\Http\Middleware\EnsureLawyerIsAuthenticated;
 use App\Livewire\Admin\Auth\Login;
 use App\Livewire\Edara\Auth\LoginEdara;
 use App\Livewire\Edara\Auth\OtpVerification;
@@ -8,6 +9,8 @@ use App\Livewire\Edara\Auth\ResetPassword;
 use App\Livewire\Edara\Main\Customer;
 use App\Livewire\Edara\Main\Dashboard;
 use App\Livewire\Edara\Main\Lawyer;
+use App\Livewire\Lawery\Auth\LoginLawyer;
+use App\Livewire\Lawery\Main\DashboardLawyer;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,6 +38,17 @@ Route::group(['prefix' => 'edara',], function () {
 
  // Lawyer routes
 Route::group(['prefix' => 'lawyer'], function () {
+    Route::group(['prefix' => 'auth' , ], function () {
+        Route::get('/login', LoginLawyer::class)->name('lawyer.login');
+        Route::get('/reset-password',ResetPassword::class)->name('lawyer.reset-password');
+        Route::get('/otp-verification',OtpVerification::class)->name('lawyer.otp-verification')->middleware('auth');
+    });
+    // Add more lawyer-specific routes here
+
+    Route::middleware([EnsureLawyerIsAuthenticated::class])->group( function () {
+        Route::get('/dashboard', DashboardLawyer::class)->name('lawyer.dashboard');
+        // Add more lawyer-specific routes here
+    });
 });
 
 // Client routes

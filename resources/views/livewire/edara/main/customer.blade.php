@@ -78,7 +78,7 @@
                                 <svg class="h-4 w-4 md:h-5 md:w-5 ml-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                                 </svg>
-                                <span>عميل المحامي - {{ $customer->lawyer->name ?? 'غير مرتبط بمحام' }}</span>
+                                <span>عميل المحامي - {{ $customer->lawyers->pluck('name')->join(' || ')  ?? 'غير مرتبط بمحام' }}</span>
                             </div>
                             <div class="flex items-center text-xs md:text-sm">
                                 <svg class="h-4 w-4 md:h-5 md:w-5 ml-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@
                  x-transition:leave-end="opacity-0 scale-95"
             >
                 <h2 class="text-xl font-bold mb-4">
-                    {{ $customerId ? 'تعديل بيانات المحامي' : 'إضافة محامي جديد' }}
+                    {{ $customerId ? 'تعديل بيانات العميل' : 'إضافة عميل جديد' }}
                 </h2>
                 <form wire:submit.prevent="store" class="space-y-4">
                     <div>

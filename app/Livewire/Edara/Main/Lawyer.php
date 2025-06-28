@@ -75,6 +75,7 @@ class Lawyer extends Component
                     $query->where('is_active', '=', false);
                 }
             })
+            ->with('customers')
             ->latest()
             ->paginate(10);
 

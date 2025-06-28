@@ -14,7 +14,7 @@ class ResetPassword extends Component
 {
     use SendsOtp;
     #[Layout('components.layouts.edara.login')] 
-    #[Title('components.layouts.edara.login')] 
+    #[Title('إعادة تعيين كلمة المرور')] 
     public $currentStep = 1;
     public $totalSteps = 3;
     

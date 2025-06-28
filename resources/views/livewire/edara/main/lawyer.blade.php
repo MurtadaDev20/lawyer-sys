@@ -87,7 +87,7 @@
                                 <svg class="h-4 w-4 md:h-5 md:w-5 ml-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                <span>عدد العملاء: {{ $clientCount }}</span>
+                                <span>عدد العملاء: {{ $lawyer->customers->count() }}</span>
                             </div>
                         </div>
                         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600 flex justify-end space-x-2">

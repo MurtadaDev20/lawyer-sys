@@ -6,6 +6,7 @@ namespace App\Models;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -60,5 +61,18 @@ class User extends Authenticatable
     public function lawyer()
     {
         return $this->belongsTo(User::class, 'lawyer_id');
+    }
+
+     public function lawyers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'customer_lawyers', 'customer_id', 'lawyer_id');
+    }
+
+    /**
+     * Get the customers assigned to this lawyer.
+     */
+    public function customers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'customer_lawyers', 'lawyer_id', 'customer_id');
     }
 }

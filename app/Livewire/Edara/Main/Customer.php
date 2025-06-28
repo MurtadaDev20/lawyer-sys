@@ -3,6 +3,7 @@
 namespace App\Livewire\Edara\Main;
 
 use App\Helpers\PhoneCleanerHelper;
+use App\Models\CustomerLawyer;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
@@ -77,6 +78,7 @@ class Customer extends Component
             ->when($this->lawyerFilter, function ($query) {
                 $query->where('lawyer_id', $this->lawyerFilter);
             })
+            ->with('lawyers')
             ->latest()
             ->paginate(10);
 
@@ -122,16 +124,26 @@ class Customer extends Component
             'email' => $this->email,
             'phone' => $phoneNumber,
             'address' => $this->address,
-            'lawyer_id' => $this->lower_id,
             'active_at' => $this->active_at,
             'expired_at' => $this->expired_at,
         ];
+
+        
         if ($this->password) {
             $data['password'] = Hash::make($this->password);
         }
 
         $user = User::updateOrCreate(['id' => $this->customerId], $data);
 
+        if($user){
+            $datacustlawer = [
+            'lawyer_id' => $this->lower_id,
+        ];
+        $customerLawyer = CustomerLawyer::updateOrCreate(
+            ['customer_id' => $user->id],
+            $datacustlawer
+        );
+        }
         // Assign lawyer role if not already assigned
         if (!$user->hasRole('Customer')) {
             $user->assignRole('Customer');

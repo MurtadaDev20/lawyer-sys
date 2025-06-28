@@ -1,6 +1,7 @@
 @include('components.layouts.edara.body.head')
+@persist('player')
 @include('components.layouts.edara.body.sidebar')
-    
+@endpersist
         {{ $slot }}
         
     

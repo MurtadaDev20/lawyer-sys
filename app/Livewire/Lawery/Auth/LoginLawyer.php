@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Edara\Auth;
+namespace App\Livewire\Lawery\Auth;
 
 use App\Models\User;
 use Livewire\Component;
@@ -12,14 +12,13 @@ use App\Helpers\PhoneCleanerHelper;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\SendOtpNotification;
 
-class LoginEdara extends Component
+class LoginLawyer extends Component
 {
-     
-    use SendsOtp;
+      use SendsOtp;
 
-    #[Layout('components.layouts.edara.login')] 
+    #[Layout('components.layouts.lawyer.login')] 
     #[Title('تسجيل الدخول')] 
-    public $phone;
+     public $phone;
     public $password;
     public $remember = false;
 
@@ -32,13 +31,13 @@ class LoginEdara extends Component
         ];
     }
 
-    // public function mount()
-    // {
-    //     if(Auth::check()){
-    //        toastr()->warning('أنت مسجل دخول بالفعل.');
-    //         return redirect()->route('edara.dashboard');
-    //     }
-    // }
+    public function mount()
+    {
+        if(Auth::check()){
+           toastr()->warning('أنت مسجل دخول بالفعل.');
+            return redirect()->route('lawyer.dashboard');
+        }
+    }
 
     public function login()
     {
@@ -59,7 +58,7 @@ class LoginEdara extends Component
             if (!$user) {
                 return toastr()->error('المستخدم غير موجود.');
             }
-            if(!$user->hasRole('Edara')) {
+            if(!$user->hasRole('Lawyer')) {
                 Auth::logout();
                 return toastr()->error('ليس لديك صلاحيات للوصول إلى هذه الصفحة.');
             }
@@ -79,16 +78,14 @@ class LoginEdara extends Component
                 return back()->with('error', 'فشل إرسال رمز التحقق، يرجى المحاولة مرة أخرى.');
             }
 
-            return redirect()->route('edara.dashboard');
+            return redirect()->route('lawyer.dashboard');
              toastr()->success('تم تسجيل الدخول بنجاح.');
         }
 
         return toastr()->error('بيانات الدخول غير صحيحة.');
     }
-
-    
     public function render()
     {
-        return view('livewire.edara.auth.login-edara');
+        return view('livewire.lawery.auth.login-lawyer');
     }
 }
