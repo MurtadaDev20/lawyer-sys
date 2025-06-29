@@ -10,7 +10,10 @@ use App\Livewire\Edara\Main\Customer;
 use App\Livewire\Edara\Main\Dashboard;
 use App\Livewire\Edara\Main\Lawyer;
 use App\Livewire\Lawery\Auth\LoginLawyer;
+use App\Livewire\Lawery\Main\Archive;
 use App\Livewire\Lawery\Main\DashboardLawyer;
+use App\Livewire\Lawery\Main\File;
+use App\Livewire\Lawery\Main\FilePreview;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -47,6 +50,11 @@ Route::group(['prefix' => 'lawyer'], function () {
 
     Route::middleware([EnsureLawyerIsAuthenticated::class])->group( function () {
         Route::get('/dashboard', DashboardLawyer::class)->name('lawyer.dashboard');
+        Route::get('/archive', Archive::class)->name('lawyer.archive');
+        Route::get('/files/{id}', File::class)->name('lawyer.file');
+        Route::get('/files/preview/{file}', FilePreview::class)->name('file.preview');
+
+
         // Add more lawyer-specific routes here
     });
 });
