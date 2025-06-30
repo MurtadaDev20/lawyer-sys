@@ -21,8 +21,11 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        Role::create(['name' => 'Edara']);
-        Role::create(['name' => 'Lawyer']);
-        Role::create(['name' => 'Customer']);
+        // Role::create(['name' => 'Edara']);
+        // Role::create(['name' => 'Lawyer']);
+        // Role::create(['name' => 'Customer']);
+
+            $this->call([CaseTypeSeeder::class,]);
+
     }
 }

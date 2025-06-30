@@ -10,6 +10,7 @@ use Livewire\Attributes\Title;
 
 class Archive extends Component
 {
+    use \Livewire\WithPagination;
     #[Layout('components.layouts.lawyer.app')] 
     #[Title('الأرشيف')]
 
@@ -29,7 +30,7 @@ class Archive extends Component
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', '%' . $this->search . '%');
             })
-            ->latest()->paginate(6);
+            ->latest()->paginate(9);
         return view('livewire.lawery.main.archive',
             [
                 'folders' => $folders,

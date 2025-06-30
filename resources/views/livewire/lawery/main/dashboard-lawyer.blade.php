@@ -22,15 +22,15 @@
                 </button>
                 <!-- Profile -->
                 <button class="flex items-center space-x-2 rtl:space-x-reverse focus:outline-none">
-                    <img class="h-8 w-8 rounded-full" src="https://ui-avatars.com/api/?name=أحمد+محمد&background=22c55e&color=fff" alt="Profile">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">أحمد محمد</span>
+                    <img class="h-8 w-8 rounded-full" src="https://ui-avatars.com/api/?name={{Auth::user()->name}}&background=22c55e&color=fff" alt="Profile">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{Auth::user()->name}}</span>
                 </button>
             </div>
         </div>
 
         <!-- Welcome Section -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 mb-8">
-            <h1 class="text-2xl font-bold mb-2">مرحباً، أحمد محمد</h1>
+            <h1 class="text-2xl font-bold mb-2">مرحباً،  {{Auth::user()->name}}</h1>
             <p class="text-gray-600 dark:text-gray-400">هذه لوحة تحكم المحامي حيث يمكنك إدارة أرشيفك وعملائك</p>
         </div>
 
@@ -46,7 +46,7 @@
                     </div>
                     <span class="text-sm text-green-600 dark:text-green-400">+12% هذا الشهر</span>
                 </div>
-                <h3 class="text-2xl font-bold mb-1">150</h3>
+                <h3 class="text-2xl font-bold mb-1">{{ \App\Models\CustomerLawyer::where('lawyer_id',Auth::id())->count() }}</h3>
                 <p class="text-gray-600 dark:text-gray-400">إجمالي العملاء</p>
             </div>
 
@@ -74,7 +74,7 @@
                     </div>
                     <span class="text-sm text-purple-600 dark:text-purple-400">+8% هذا الشهر</span>
                 </div>
-                <h3 class="text-2xl font-bold mb-1">75</h3>
+                <h3 class="text-2xl font-bold mb-1">{{ \App\Models\Folder::where('lawyer_id',Auth::id())->count() ?? 0 }}</h3>
                 <p class="text-gray-600 dark:text-gray-400">المجلدات</p>
             </div>
 
@@ -88,8 +88,31 @@
                     </div>
                     <span class="text-sm text-yellow-600 dark:text-yellow-400">+15% هذا الشهر</span>
                 </div>
-                <h3 class="text-2xl font-bold mb-1">320</h3>
+                <h3 class="text-2xl font-bold mb-1">{{ \App\Models\File::where('lawyer_id',Auth::id())->count() ?? 0 }}</h3>
                 <p class="text-gray-600 dark:text-gray-400">الملفات</p>
+            </div>
+            <!-- Total Files -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
+                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-sm text-yellow-600 dark:text-yellow-400">+15% هذا الشهر</span>
+                </div>
+                @php
+                    use App\Models\File;
+                    use Illuminate\Support\Facades\Auth;
+
+                    $files = File::where('lawyer_id', Auth::id())->get();
+                    $totalAttachments = $files->reduce(function ($carry, $file) {
+                        return $carry + $file->getMedia('documents')->count();
+                    }, 0);
+                @endphp
+                <h3 class="text-2xl font-bold mb-1">{{ $totalAttachments }}</h3>
+
+                <p class="text-gray-600 dark:text-gray-400">المرفقات</p>
             </div>
         </div>
 
@@ -99,7 +122,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
                 <h2 class="text-xl font-bold mb-4">الأرشيف</h2>
                 <p class="text-gray-600 dark:text-gray-400 mb-4">إدارة ملفاتك وأرشيفك القانوني</p>
-                <a href="lawyer-archives.html" class="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                <a href="{{ route('lawyer.archive') }}" wire:navigate class="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
                     الانتقال إلى الأرشيف
                 </a>
             </div>

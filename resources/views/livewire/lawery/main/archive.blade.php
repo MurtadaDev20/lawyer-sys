@@ -13,7 +13,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 mb-8">
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="flex-1">
-                    <input type="text" wire:model.debounce.500ms="search"
+                    <input type="text" wire:model.live="search"
                         placeholder="بحث عن مجلد..."
                         class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
                 </div>
@@ -47,6 +47,9 @@
                     </div>
                     <p class="text-gray-600 dark:text-gray-400 mb-4">
                         {{ $folder->description ?? 'بدون وصف' }}
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                        {{ $folder->files->count() }} ملف{{ $folder->files->count() > 1 ? 'ات' : '' }}
                     </p>
                     <a href="{{ route('lawyer.file', ['id' => $folder->id]) }}"
                         class="inline-block px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
