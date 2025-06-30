@@ -11,6 +11,7 @@ use App\Livewire\Edara\Main\Dashboard;
 use App\Livewire\Edara\Main\Lawyer;
 use App\Livewire\Lawery\Auth\LoginLawyer;
 use App\Livewire\Lawery\Main\Archive;
+use App\Livewire\Lawery\Main\CustomerManage;
 use App\Livewire\Lawery\Main\DashboardLawyer;
 use App\Livewire\Lawery\Main\File;
 use App\Livewire\Lawery\Main\FilePreview;
@@ -54,6 +55,8 @@ Route::group(['prefix' => 'lawyer'], function () {
         Route::get('/files/{id}', File::class)->name('lawyer.file');
         Route::get('/files/preview/{file}', FilePreview::class)->name('file.preview');
 
+        //customer management routes
+        Route::get('/customer-manage', CustomerManage::class)->name('lawyer.customerManage');
 
         // Add more lawyer-specific routes here
     });

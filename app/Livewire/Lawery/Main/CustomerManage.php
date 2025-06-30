@@ -1,23 +1,26 @@
 <?php
 
-namespace App\Livewire\Edara\Main;
+namespace App\Livewire\Lawery\Main;
 
-use App\Helpers\PhoneCleanerHelper;
-use App\Models\CustomerLawyer;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Hash;
-use Livewire\Attributes\Title;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Models\CustomerLawyer;
+use Livewire\Attributes\Title;
+use Illuminate\Validation\Rule;
+use Livewire\Attributes\Layout;
+use App\Helpers\PhoneCleanerHelper;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
-class Customer extends Component
-{ 
-    use WithPagination;
-    #[Title('إدارة العملاء')] 
-    public $name, $email, $phone, $address, $password , $lower_id,
-        $statusFilter = 'all' , $lawyerFilter ;
+class CustomerManage extends Component
+{
+    #[Layout('components.layouts.lawyer.app')] 
+    #[Title('إدارة العملاء')]
+
+    public $name, $email, $phone, $address, $password ,
+        $statusFilter = 'all'  ;
     public $customerId;
     public $active_at, $expired_at;
     public $isModalOpen = false;
@@ -30,10 +33,9 @@ class Customer extends Component
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:255',
             'password' => 'required_if:customerId,null|string|min:8|nullable',
-            'active_at' => 'required|date',
-            'expired_at' => 'required|date|after:active_at',
         ];
     }
+
     public function messages()
     {
         return [
@@ -44,14 +46,8 @@ class Customer extends Component
             'address.required' => 'العنوان مطلوب',
             'password.required_if' => 'كلمة المرور مطلوبة عند إضافة محامي جديد',
             'password.min' => 'يجب أن تكون كلمة المرور على الأقل 8 أحرف',
-            'active_at.required' => 'تاريخ التفعيل مطلوب',
-            'active_at.date' => 'تاريخ التفعيل يجب أن يكون تاريخاً صالحاً',
-            'expired_at.required' => 'تاريخ الانتهاء مطلوب',
-            'expired_at.date' => 'تاريخ الانتهاء يجب أن يكون تاريخاً صالحاً',
-            'expired_at.after' => 'تاريخ الانتهاء يجب أن يكون بعد تاريخ التفعيل',
         ];
     }
-
 
     public function render()
     {
@@ -67,30 +63,22 @@ class Customer extends Component
             })
             ->when($this->statusFilter && $this->statusFilter !== 'all', function ($query) use ($now) {
                 if ($this->statusFilter === 'active') {
-                    $query->where('active_at', '<=', $now)
-                        ->where('expired_at', '>=', $now)
-                        ->where('is_active', '=', true);
-                } elseif ($this->statusFilter === 'expired') {
-                    $query->where('expired_at', '<', $now);
-                } elseif ($this->statusFilter === 'not_active') {
+                    $query->where('is_active', '=', true);
+                }  elseif ($this->statusFilter === 'not_active') {
                     $query->where('is_active', '=', false);
                 }
-            })
-            ->when($this->lawyerFilter, function ($query) {
-                $query->where('lawyer_id', $this->lawyerFilter);
             })
             ->with('lawyers')
             ->latest()
             ->paginate(10);
 
-        return view('livewire.edara.main.customer', [
+        return view('livewire.lawery.main.customer-manage', [
             'customers' => $customers,
-            'lawyers' => $lawyers,
-            'cities' => ['بغداد', 'البصرة', 'النجف', 'أربيل', 'كركوك', 'الموصل'],
+            'cities' => ['بغداد','البصرة','نينوى','الأنبار','كربلاء','النجف','دهوك','أربيل','السليمانية','ديالى','كركوك','صلاح الدين','بابل','واسط','ميسان','ذي قار','المثنى','القادسية',],
         ]);
     }
 
-    public function create()
+     public function create()
     {
         $this->resetInputFields();
         $this->openModal();
@@ -123,10 +111,9 @@ class Customer extends Component
         $data = [
             'name' => $this->name,
             'email' => $this->email,
+            'is_active' => true,
             'phone' => $phoneNumber,
             'address' => $this->address,
-            'active_at' => $this->active_at,
-            'expired_at' => $this->expired_at,
         ];
 
         
@@ -138,7 +125,7 @@ class Customer extends Component
 
         if($user){
             $datacustlawer = [
-            'lawyer_id' => $this->lower_id,
+            'lawyer_id' => Auth::user()->id, 
         ];
         $customerLawyer = CustomerLawyer::updateOrCreate(
             ['customer_id' => $user->id],
@@ -163,8 +150,6 @@ class Customer extends Component
         $this->email = $customers->email;
         $this->phone = $customers->phone;
         $this->address = $customers->address;
-        $this->active_at = $customers->active_at ? Carbon::parse($customers->active_at)->format('Y-m-d') : '';
-        $this->expired_at = $customers->expired_at ? Carbon::parse($customers->expired_at)->format('Y-m-d') : '';
         $this->openModal();
     }
     public function delete($id)
@@ -182,12 +167,10 @@ class Customer extends Component
         $expiredAt = Carbon::parse($customer->expired_at);
         $activeAt = Carbon::parse($customer->active_at);
 
-        if ($now->gt($expiredAt)) {
-            return ['text' => 'منتهي', 'class' => 'bg-red-500 text-red-800 dark:bg-red-900 dark:text-red-100'];
-        } elseif ($now->lt($activeAt) || !$customer->is_active) {
+        if ( !$customer->is_active) {
             return ['text' => 'غير مفعل', 'class' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100'];
         } else {
-            return ['text' => 'نشط', 'class' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100'];
+            return ['text' => 'نشط', 'class' => 'bg-primary-600 text-white dark:bg-green-800 dark:text-green-100'];
         }
     }
 

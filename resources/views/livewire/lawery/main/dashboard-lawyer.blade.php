@@ -131,7 +131,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
                 <h2 class="text-xl font-bold mb-4">العملاء</h2>
                 <p class="text-gray-600 dark:text-gray-400 mb-4">إدارة عملائك وقضاياهم</p>
-                <a href="lawyer-clients.html" class="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                <a href="{{ route('lawyer.customerManage') }}" wire:navigate class="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
                     الانتقال إلى العملاء
                 </a>
             </div>

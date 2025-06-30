@@ -7,7 +7,7 @@ export default {
         './app/Http/Livewire/**/*.php', // ✅ for Livewire class-based components
         './resources/views/livewire/**/*.blade.php', // ✅ for Livewire Blade views
     ],
-    darkMode: 'selector',
+    darkMode: 'class',
   theme: {
     
     extend: {
