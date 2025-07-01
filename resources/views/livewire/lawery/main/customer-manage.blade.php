@@ -75,6 +75,12 @@
                             </div>
                         </div>
                         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600 flex justify-end space-x-2">
+                            <a href="{{ route('lawyer.case-lawyer', ['id' => $customer->id]) }}" wire:navigate
+                                
+                                class="text-primary-600 hover:text-primary-700 px-3 py-1 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/50 transition-colors"
+                            >
+                                قضايا العميل
+                            </a>
                             <button 
                                 wire:click="edit({{ $customer->id }})"
                                 class="text-primary-600 hover:text-primary-700 px-3 py-1 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/50 transition-colors"

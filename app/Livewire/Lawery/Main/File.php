@@ -17,6 +17,7 @@ class File extends Component
 
     #[Layout('components.layouts.lawyer.app')] 
     #[Title('إدارة الملفات')]
+    protected $lazy = true;
 
     public $folderId;
     public $files;

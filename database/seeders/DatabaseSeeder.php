@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
         // Role::create(['name' => 'Lawyer']);
         // Role::create(['name' => 'Customer']);
 
-            $this->call([CaseTypeSeeder::class,]);
+            // $this->call([CaseTypeSeeder::class,]);
+            $this->call([CaseStatus::class,]);
 
     }
 }

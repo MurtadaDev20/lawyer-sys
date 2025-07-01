@@ -19,6 +19,8 @@ class CustomerManage extends Component
     #[Layout('components.layouts.lawyer.app')] 
     #[Title('إدارة العملاء')]
 
+    protected $lazy = true;
+
     public $name, $email, $phone, $address, $password ,
         $statusFilter = 'all'  ;
     public $customerId;

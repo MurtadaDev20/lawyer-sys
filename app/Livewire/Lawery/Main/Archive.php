@@ -14,6 +14,8 @@ class Archive extends Component
     #[Layout('components.layouts.lawyer.app')] 
     #[Title('الأرشيف')]
 
+    protected $lazy = true;
+
     public $name, $description, $folderId;
     public $showModal = false;
     public $isEdit = false;

@@ -13,6 +13,7 @@ class FilePreview extends Component
 {
     #[Layout('components.layouts.lawyer.app')] 
     #[Title('معاينة الملف')]
+    protected $lazy = true;
     public $file;
     public $mediaItems = [];
 

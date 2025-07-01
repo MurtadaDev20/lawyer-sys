@@ -60,8 +60,8 @@
                     </div>
                     <span class="text-sm text-blue-600 dark:text-blue-400">+5% هذا الشهر</span>
                 </div>
-                <h3 class="text-2xl font-bold mb-1">45</h3>
-                <p class="text-gray-600 dark:text-gray-400">القضايا النشطة</p>
+                <h3 class="text-2xl font-bold mb-1">{{ \App\Models\Casee::where('lawyer_id',Auth::id())->count() ?? 0 }}</h3>
+                <p class="text-gray-600 dark:text-gray-400">القضايا</p>
             </div>
 
             <!-- Total Folders -->

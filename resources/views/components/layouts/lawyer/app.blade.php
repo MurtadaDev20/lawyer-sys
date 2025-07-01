@@ -1,5 +1,5 @@
 @include('components.layouts.lawyer.body.head')
-@persist('player')
+@persist('sidebar-lawyer')
 @include('components.layouts.lawyer.body.sidebar')
 @endpersist
         {{ $slot }}
