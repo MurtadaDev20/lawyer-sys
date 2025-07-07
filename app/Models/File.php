@@ -15,7 +15,9 @@ class File extends Model implements HasMedia
         'number',
         'description',
         'folder_id',
-        'lawyer_id'
+        'lawyer_id',
+        'case_id',
+        'customer_id',
     ];
 
     public function lawyer()
@@ -26,10 +28,19 @@ class File extends Model implements HasMedia
     {
         return $this->belongsTo(Folder::class);
     }
+    public function casee()
+    {
+        return $this->belongsTo(Casee::class, 'case_id');
+    }
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'customer_id');
+    }
 
      // Register media collection for files
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('documents')->useDisk('public'); // use 'public' disk, you can change it
+        $this->addMediaCollection('documents')->useDisk('public'); 
+        $this->addMediaCollection('Casedocuments')->useDisk('public'); 
     }
 }

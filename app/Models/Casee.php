@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Casee extends Model
+class Casee extends Model implements HasMedia
 {
+    use InteractsWithMedia;
     protected $fillable = [
         'case_type_id',
         'case_status_id',
@@ -41,5 +44,16 @@ class Casee extends Model
     public function customer()
     {
         return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
+
+     // Register media collection for files
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('documents_case')->useDisk('public'); 
     }
 }

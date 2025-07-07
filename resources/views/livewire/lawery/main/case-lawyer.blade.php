@@ -96,7 +96,7 @@
         </div>
 
         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600 flex justify-end space-x-2">
-            <a href="{{ route('lawyer.case-lawyer', ['id' => $case->id]) }}"
+            <a href="{{ route('lawyer.case-details', ['id' => $case->id]) }}"
                wire:navigate
                class="text-primary-600 hover:text-primary-700 px-3 py-1 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/50 transition-colors">
                 <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" stroke-width="2"

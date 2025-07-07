@@ -13,20 +13,23 @@ class FilePreview extends Component
 {
     #[Layout('components.layouts.lawyer.app')] 
     #[Title('معاينة الملف')]
-    protected $lazy = true;
     public $file;
     public $mediaItems = [];
 
-    public function mount(File $file)
+    public function mount(File $id)
     {
+        
+        $file = $id;
         $this->file = $file;
-        $this->mediaItems = $file->getMedia('documents');
+        // dd($this->file);
+         $this->mediaItems = $this->file->getMedia('documents')
+                          ->concat($this->file->getMedia('Casedocuments'));
     }
 
     public function downloadAll()
     {
         if (empty($this->mediaItems)) {
-            session()->flash('error', 'لا توجد ملفات للتحميل.');
+            toastr()->error('لا توجد ملفات للتحميل.');
             return;
         }
 
@@ -43,7 +46,7 @@ class FilePreview extends Component
             return response()->download($zipPath)->deleteFileAfterSend(true);
         }
 
-        session()->flash('error', 'فشل إنشاء ملف ZIP.');
+        toastr()->error('فشل إنشاء ملف ZIP.');
     }
 
     public function render()

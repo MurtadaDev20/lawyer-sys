@@ -55,7 +55,7 @@
                     </div>
                 </div>
                 <div class="flex justify-between items-center">
-                    <a href="{{ route('file.preview', $file->id) }}" class="text-sm md:text-base text-primary-600 hover:text-primary-700 px-2 py-1 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/50 transition-colors">
+                    <a href="{{ route('file.preview', $file->id) }}" wire:navigate class="text-sm md:text-base text-primary-600 hover:text-primary-700 px-2 py-1 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/50 transition-colors">
                         معاينة
                     </a>
                     

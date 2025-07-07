@@ -111,7 +111,8 @@ class CaseLawyer extends Component
             ]
         );
 
-        session()->flash('message', $this->caseId ? 'تم تحديث القضية بنجاح' : 'تم إنشاء القضية بنجاح');
+        toastr()->success($this->caseId ? 'تم تحديث القضية بنجاح' : 'تم إنشاء القضية بنجاح');
+        // session()->flash('message', $this->caseId ? 'تم تحديث القضية بنجاح' : 'تم إنشاء القضية بنجاح');
 
         $this->closeModal();
         $this->resetForm();
@@ -120,7 +121,7 @@ class CaseLawyer extends Component
     public function delete($id)
     {
         Casee::findOrFail($id)->delete();
-        session()->flash('message', 'تم حذف القضية بنجاح');
+        toastr()->success('تم حذف القضية بنجاح');
     }
 
     public function openModal() { $this->isModalOpen = true; }

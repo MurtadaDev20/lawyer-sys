@@ -145,15 +145,15 @@ class File extends Component
         session()->flash('message', 'تم حذف الملف بنجاح');
     }
 
-    public function download($id, $mediaId)
-    {
-        $file = ModelsFile::findOrFail($id);
-        $media = $file->getMedia('documents')->where('id', $mediaId)->first();
+    // public function download($id, $mediaId)
+    // {
+    //     $file = ModelsFile::findOrFail($id);
+    //     $media = $file->getMedia('documents')->where('id', $mediaId)->first();
 
-        if ($media && Storage::disk($media->disk)->exists($media->getPath())) {
-            return response()->download($media->getPath(), $media->file_name);
-        }
+    //     if ($media && Storage::disk($media->disk)->exists($media->getPath())) {
+    //         return response()->download($media->getPath(), $media->file_name);
+    //     }
 
-        session()->flash('error', 'الملف غير موجود');
-    }
+    //     toastr()->error('الملف غير موجود أو تم حذفه');
+    // }
 }
