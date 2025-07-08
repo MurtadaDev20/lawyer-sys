@@ -75,4 +75,20 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'customer_lawyers', 'lawyer_id', 'customer_id');
     }
+
+    /**
+     * Get the cases associated with this user.
+     */
+    public function cases()
+    {
+        return $this->hasMany(Casee::class, 'lawyer_id', 'id'); 
+    }
+    /**
+     * Get the cases assigned to this user.
+     */
+    public function assignedCases()
+    {
+        return $this->hasMany(Casee::class, 'customer_id', 'id');
+    }   
+
 }

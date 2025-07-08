@@ -138,7 +138,7 @@
         </div>
 
         <!-- Recent Activity -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+        {{-- <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
             <h2 class="text-xl font-bold mb-4">النشاط الأخير</h2>
             <div class="space-y-4">
                 <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -156,6 +156,6 @@
                     <span class="text-sm text-gray-500">منذ 3 ساعات</span>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </main>
 </div>

@@ -49,7 +49,10 @@ class CaseLawyer extends Component
 
     public function render()
     {
-        $query = Casee::query()->with(['caseStatus', 'caseType']);
+        $query = Casee::query()
+            ->where('lawyer_id', Auth::id())
+            ->where('customer_id', $this->customerId)
+        ->with(['caseStatus', 'caseType']);
 
         if ($this->statusFilter !== 'all') {
             $query->where('case_status_id', $this->statusFilter);
