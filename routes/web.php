@@ -1,23 +1,27 @@
 <?php
 
+use App\Livewire\Admin\Auth\Login;
+use App\Livewire\Lawery\Main\File;
+use App\Livewire\Edara\Main\Lawyer;
+use App\Livewire\Edara\Main\Customer;
+use App\Livewire\Lawery\Main\Archive;
+use Illuminate\Support\Facades\Route;
+use App\Livewire\Edara\Main\Dashboard;
+use App\Livewire\Edara\Auth\LoginEdara;
+use App\Livewire\Lawery\Main\CaseLawyer;
+use App\Livewire\Lawery\Auth\LoginLawyer;
+use App\Livewire\Lawery\Main\CaseDetails;
+use App\Livewire\Lawery\Main\FilePreview;
+use App\Livewire\Edara\Auth\ResetPassword;
+use App\Livewire\Edara\Auth\OtpVerification;
+use App\Livewire\Lawery\Main\CustomerManage;
+use App\Livewire\Customer\Auth\LoginCustomer;
+use App\Livewire\Lawery\Main\DashboardLawyer;
 use App\Http\Middleware\EnsureEdaraIsAuthenticated;
 use App\Http\Middleware\EnsureLawyerIsAuthenticated;
-use App\Livewire\Admin\Auth\Login;
-use App\Livewire\Edara\Auth\LoginEdara;
-use App\Livewire\Edara\Auth\OtpVerification;
-use App\Livewire\Edara\Auth\ResetPassword;
-use App\Livewire\Edara\Main\Customer;
-use App\Livewire\Edara\Main\Dashboard;
-use App\Livewire\Edara\Main\Lawyer;
-use App\Livewire\Lawery\Auth\LoginLawyer;
-use App\Livewire\Lawery\Main\Archive;
-use App\Livewire\Lawery\Main\CaseDetails;
-use App\Livewire\Lawery\Main\CaseLawyer;
-use App\Livewire\Lawery\Main\CustomerManage;
-use App\Livewire\Lawery\Main\DashboardLawyer;
-use App\Livewire\Lawery\Main\File;
-use App\Livewire\Lawery\Main\FilePreview;
-use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\EnsureCustomerIsAuthenticated;
+use App\Livewire\Customer\Main\CasessCustomer;
+use App\Livewire\Customer\Main\DashboardCustomer;
 
 Route::get('/', function () {
     return view('welcome');
@@ -66,5 +70,17 @@ Route::group(['prefix' => 'lawyer'], function () {
 });
 
 // Client routes
-Route::group(['prefix' => 'client'], function () {
+Route::group(['prefix' => 'customer'], function () {
+        Route::group(['prefix' => 'auth' , ], function () {
+            Route::get('/login', LoginCustomer::class)->name('customer.login');
+            Route::get('/reset-password',ResetPassword::class)->name('lawyer.reset-password');
+            Route::get('/otp-verification',OtpVerification::class)->name('lawyer.otp-verification')->middleware('auth');
+    });
+
+    // Add more customer-specific routes here
+    Route::middleware([EnsureCustomerIsAuthenticated::class])->group( function () {
+        Route::get('/dashboard', DashboardCustomer::class)->name('customer.dashboard');
+        Route::get('/casess', CasessCustomer::class)->name('customer.case');
+
+    });
 });

@@ -1,28 +1,26 @@
 <?php
 
-namespace App\Livewire\Lawery\Auth;
+namespace App\Livewire\Customer\Auth;
 
 use App\Models\User;
 use Livewire\Component;
 use App\Traits\SendsOtp;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
 use App\Helpers\PhoneCleanerHelper;
 use Illuminate\Support\Facades\Auth;
-use App\Notifications\SendOtpNotification;
 
-class LoginLawyer extends Component
+class LoginCustomer extends Component
 {
-      use SendsOtp;
-
-    #[Layout('components.layouts.lawyer.login')] 
+    use SendsOtp;
+     #[Layout('components.layouts.customer.login')] 
     #[Title('تسجيل الدخول')] 
-     public $phone;
+
+    public $phone;
     public $password;
     public $remember = false;
 
-    public function rules()
+        public function rules()
     {
         return [
             'phone' => ['required'], 
@@ -35,7 +33,7 @@ class LoginLawyer extends Component
     {
         if(Auth::check()){
            toastr()->warning('أنت مسجل دخول بالفعل.');
-            return redirect()->route('lawyer.dashboard');
+            return redirect()->route('customer.dashboard');
         }
     }
 
@@ -58,7 +56,7 @@ class LoginLawyer extends Component
             if (!$user) {
                 return toastr()->error('المستخدم غير موجود.');
             }
-            if(!$user->hasRole('Lawyer')) {
+            if(!$user->hasRole('Customer')) {
                 Auth::logout();
                 return toastr()->error('ليس لديك صلاحيات للوصول إلى هذه الصفحة.');
             }
@@ -78,14 +76,15 @@ class LoginLawyer extends Component
                 return back()->with('error', 'فشل إرسال رمز التحقق، يرجى المحاولة مرة أخرى.');
             }
 
-            return redirect()->route('lawyer.dashboard');
+            return redirect()->route('customer.dashboard');
              toastr()->success('تم تسجيل الدخول بنجاح.');
         }
 
         return toastr()->error('بيانات الدخول غير صحيحة.');
     }
+
     public function render()
     {
-        return view('livewire.lawery.auth.login-lawyer');
+        return view('livewire.customer.auth.login-customer');
     }
 }
