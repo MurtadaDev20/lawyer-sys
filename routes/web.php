@@ -20,12 +20,10 @@ use App\Livewire\Lawery\Main\DashboardLawyer;
 use App\Http\Middleware\EnsureEdaraIsAuthenticated;
 use App\Http\Middleware\EnsureLawyerIsAuthenticated;
 use App\Http\Middleware\EnsureCustomerIsAuthenticated;
+use App\Livewire\Customer\Main\CaseDetails as MainCaseDetails;
 use App\Livewire\Customer\Main\CasessCustomer;
 use App\Livewire\Customer\Main\DashboardCustomer;
-
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Livewire\Customer\Main\FilePreviewCustomer;
 
  // edara routes
 Route::group(['prefix' => 'edara',], function () {
@@ -70,6 +68,9 @@ Route::group(['prefix' => 'lawyer'], function () {
 });
 
 // Client routes
+Route::get('/',function(){
+    return redirect()->route('customer.login');
+});
 Route::group(['prefix' => 'customer'], function () {
         Route::group(['prefix' => 'auth' , ], function () {
             Route::get('/login', LoginCustomer::class)->name('customer.login');
@@ -81,6 +82,8 @@ Route::group(['prefix' => 'customer'], function () {
     Route::middleware([EnsureCustomerIsAuthenticated::class])->group( function () {
         Route::get('/dashboard', DashboardCustomer::class)->name('customer.dashboard');
         Route::get('/casess', CasessCustomer::class)->name('customer.case');
+        Route::get('/case-details/{id}', MainCaseDetails::class)->name('customer.case-details');
+        Route::get('/files/preview/{id}', FilePreviewCustomer::class)->name('file.previewCustomer');
 
     });
 });
