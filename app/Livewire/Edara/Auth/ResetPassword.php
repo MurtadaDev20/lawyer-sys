@@ -13,21 +13,21 @@ use Livewire\Attributes\Title;
 class ResetPassword extends Component
 {
     use SendsOtp;
-    #[Layout('components.layouts.edara.login')] 
-    #[Title('إعادة تعيين كلمة المرور')] 
+    #[Layout('components.layouts.edara.login')]
+    #[Title('إعادة تعيين كلمة المرور')]
     public $currentStep = 1;
     public $totalSteps = 3;
-    
+
     // Step 1 fields
     public $phone;
-    
+
     // Step 2 fields
     public $otp;
-    
+
     // Step 3 fields
     public $password;
     public $password_confirmation;
-    
+
     public $user;
     public $progress = 0;
 
@@ -49,16 +49,17 @@ class ResetPassword extends Component
 
     public function nextStep()
     {
+
         if ($this->currentStep === 1) {
             $this->validate(['phone' => 'required']);
-            
+
             $phoneNumber = (new PhoneCleanerHelper($this->phone))->clean();
             if ($phoneNumber == false) {
                 return toastr()->error('رقم الهاتف غير صحيح.');
             }
 
             $this->user = User::where('phone', $phoneNumber)->first();
-            
+
             if (!$this->user) {
                 return toastr()->error('لا يوجد حساب مرتبط بهذا الرقم.');
             }
@@ -70,8 +71,7 @@ class ResetPassword extends Component
             }
 
             return toastr()->error('فشل إرسال رمز التحقق، يرجى المحاولة مرة أخرى.');
-        }
-        elseif ($this->currentStep === 2) {
+        } elseif ($this->currentStep === 2) {
             $this->validate(['otp' => 'required|digits:6']);
 
             $otpRecord = UserOtp::where('user_id', $this->user->id)
@@ -83,7 +83,7 @@ class ResetPassword extends Component
                     'is_otp_verified' => true,
                     'verified_at' => now(),
                 ]);
-                
+
                 $this->user->update(['is_verified' => true]);
                 $this->currentStep++;
                 $this->updateProgress();
@@ -135,7 +135,17 @@ class ResetPassword extends Component
         $otpRecord->delete();
 
         toastr()->success('تم إعادة تعيين كلمة المرور بنجاح!');
-        return redirect()->route('edara.login');
+        // Conditional redirect based on route
+
+        $referer = request()->header('Referer');
+
+        if (str_contains($referer, 'customer/auth/reset-password')) {
+            return redirect()->route('customer.login');
+        } elseif (str_contains($referer, 'lawyer/auth/reset-password')) {
+            return redirect()->route('lawyer.login');
+        } else {
+            return redirect()->route('edara.login');
+        }
     }
 
     public function render()

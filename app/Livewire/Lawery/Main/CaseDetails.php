@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Auth;
 class CaseDetails extends Component
 {
     use WithFileUploads , SendsWhatsappNotification;
-#[Layout('components.layouts.lawyer.app')] 
-#[Title('تفاصيل القضية')]
+    #[Layout('components.layouts.lawyer.app')] 
+    #[Title('تفاصيل القضية')]
 
     public $caseId ,
            $statuses = [],

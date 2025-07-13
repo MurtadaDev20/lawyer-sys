@@ -43,7 +43,7 @@
                     <span class="mr-2 text-sm text-gray-700 dark:text-gray-300">تذكرني</span>
                 </label>
 
-                <a href="{{ route('lawyer.reset-password') }}" wire:navigate class="text-sm text-primary-600 hover:text-primary-500">نسيت كلمة المرور؟</a>
+                <a href="{{ route('customer.reset-password') }}" wire:navigate class="text-sm text-primary-600 hover:text-primary-500">نسيت كلمة المرور؟</a>
             </div>
 
             <button type="submit"

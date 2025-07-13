@@ -70,7 +70,7 @@ class CustomerManage extends Component
                     $query->where('is_active', '=', false);
                 }
             })
-            ->with(['lawyers', 'roles'])
+            ->with(['lawyers', 'roles','cases','customers','assignedCases'])
             ->latest()
             ->paginate(10);
 

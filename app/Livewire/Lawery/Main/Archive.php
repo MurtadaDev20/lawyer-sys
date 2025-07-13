@@ -32,6 +32,7 @@ class Archive extends Component
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', '%' . $this->search . '%');
             })
+            ->with(['lawyer','files'])
             ->latest()->paginate(9);
         return view('livewire.lawery.main.archive',
             [

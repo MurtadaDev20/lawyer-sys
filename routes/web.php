@@ -36,7 +36,7 @@ Route::group(['prefix' => 'edara',], function () {
     });
 
     // Admin routes
-    Route::middleware([EnsureEdaraIsAuthenticated::class])->group( function () {
+    Route::group(['middleware' => ['role:Edara']], function () {
         Route::get('/dashboard', Dashboard::class)->name('edara.dashboard');
         Route::get('/lawyer-manage', Lawyer::class)->name('edara.lawyerManage');
         Route::get('/customer-manage', Customer::class)->name('edara.customerManage');
@@ -53,7 +53,7 @@ Route::group(['prefix' => 'lawyer'], function () {
     });
     // Add more lawyer-specific routes here
 
-    Route::middleware([EnsureLawyerIsAuthenticated::class])->group( function () {
+    Route::group(['middleware' => ['role:Lawyer']], function () {
         Route::get('/dashboard', DashboardLawyer::class)->name('lawyer.dashboard');
         Route::get('/archive', Archive::class)->name('lawyer.archive');
         Route::get('/files/{id}', File::class)->name('lawyer.file');
@@ -74,16 +74,15 @@ Route::get('/',function(){
 Route::group(['prefix' => 'customer'], function () {
         Route::group(['prefix' => 'auth' , ], function () {
             Route::get('/login', LoginCustomer::class)->name('customer.login');
-            Route::get('/reset-password',ResetPassword::class)->name('lawyer.reset-password');
+            Route::get('/reset-password',ResetPassword::class)->name('customer.reset-password');
             Route::get('/otp-verification',OtpVerification::class)->name('lawyer.otp-verification')->middleware('auth');
     });
 
     // Add more customer-specific routes here
-    Route::middleware([EnsureCustomerIsAuthenticated::class])->group( function () {
+    Route::group(['middleware' => ['role:Customer']], function () {
         Route::get('/dashboard', DashboardCustomer::class)->name('customer.dashboard');
         Route::get('/casess', CasessCustomer::class)->name('customer.case');
         Route::get('/case-details/{id}', MainCaseDetails::class)->name('customer.case-details');
         Route::get('/files/preview/{id}', FilePreviewCustomer::class)->name('file.previewCustomer');
-
     });
 });

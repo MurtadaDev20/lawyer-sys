@@ -50,6 +50,7 @@ class File extends Component
                       ->orWhere('number', 'like', '%'.$this->search.'%')
                       ->orWhere('description', 'like', '%'.$this->search.'%');
             })
+            ->with(['lawyer','folder','casee','customer','media'])
             ->orderBy('created_at', 'desc')
             ->get();
 

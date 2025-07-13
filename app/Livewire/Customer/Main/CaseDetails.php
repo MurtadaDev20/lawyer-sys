@@ -26,7 +26,9 @@ class CaseDetails extends Component
             $this->caseId = $id;
             $this->statuses = \App\Models\CaseStatus::all();
             $this->customer_case_id = Casee::where('id', $id)
-                ->where('customer_id', Auth::id())->first();
+                ->where('customer_id', Auth::id())
+                ->with('customer')
+                ->get();
         }
 
 
@@ -35,12 +37,13 @@ class CaseDetails extends Component
     public function render()
     {
         $files = File::where('case_id', $this->caseId)
+            ->with(['customer','lawyer','casee'])
             ->where('customer_id', Auth::id())
             ->paginate(10);
 
-        $case = Casee::with(['lawyer', 'customer', 'caseType', 'caseStatus'])
-            ->where('id', $this->caseId)
+        $case = Casee::where('id', $this->caseId)
             ->where('customer_id', Auth::id())
+            ->with(['lawyer', 'customer', 'caseType', 'caseStatus'])
             ->firstOrFail();
         return view('livewire.customer.main.case-details', [
             'case' => $case,
