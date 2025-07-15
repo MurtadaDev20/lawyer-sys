@@ -19,7 +19,6 @@ class EnsureCustomerIsAuthenticated
         if (!Auth::check() || !Auth::user()->hasRole('Customer')) {
             toastr()->error('ليس لديك صلاحية الوصول لهذه الصفحة،');
             return redirect()->route('customer.login'); 
-            
         }
 
         return $next($request);

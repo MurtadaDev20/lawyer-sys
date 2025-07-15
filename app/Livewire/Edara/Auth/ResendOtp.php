@@ -17,7 +17,6 @@ class ResendOtp extends Component
 
     public function handleResendRequest($userId)
     {
-        dd($userId);
         $user = User::find($userId);
         
         if ($user) {

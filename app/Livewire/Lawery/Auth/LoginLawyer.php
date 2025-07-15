@@ -79,14 +79,15 @@ class LoginLawyer extends Component
                 Auth::logout();
                 return toastr()->error('حسابك غير مفعل، يرجى التواصل مع الإدارة.');
             }
+            if ($user->expired_at < now()) {
+                Auth::logout();
+                return toastr()->error('حسابك منتهي الصلاحية يرجى التواصل مع فريق الدعم');
+            }
 
             if (!$user->is_verified) {
-                if ($this->sendOtp($user)) {
-                    toastr()->success('تم إرسال رمز التحقق إلى رقم هاتفك. يرجى التحقق منه.');
-                    return redirect()->route('edara.otp-verification'); // confirm if this is correct route
-                }
-
-                return back()->with('error', 'فشل إرسال رمز التحقق، يرجى المحاولة مرة أخرى.');
+                Auth::logout();
+                    toastr()->success('يرجى التحقق من هاتفك');
+                    return redirect()->route('lawyer.reset-password');
             }
 
             toastr()->success('تم تسجيل الدخول بنجاح.');

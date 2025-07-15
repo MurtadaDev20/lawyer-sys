@@ -71,7 +71,7 @@ trait SendsOtp
 
         $client->messages->create("whatsapp:{$phoneNumber}", [
             'from' => 'whatsapp:' . config('services.twilio.from'),
-            'body' => "Your verification code is: {$otp}"
+            'body' => "رمز التحقق الخاص بك لا تشاركه مع اي شخص: {$otp}"
         ]);
     }
 }

@@ -52,7 +52,17 @@
                             إعادة الإرسال
                         </button>
                     </p>
-                    <a href="{{ route('edara.login') }}" class="block text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
+                    @php
+                        $referer = request()->header('Referer');
+                        if (str_contains($referer, 'customer/auth/otp-verification')) {
+                            $backUrl = route('customer.login');
+                        } elseif (str_contains($referer, 'lawyer/auth/otp-verification')) {
+                            $backUrl = route('lawyer.login');
+                        } else {
+                            $backUrl = route('edara.login');
+                        }
+                    @endphp
+                    <a href="{{ $backUrl }}" class="block text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
                         العودة إلى تسجيل الدخول
                     </a>
                 </div>

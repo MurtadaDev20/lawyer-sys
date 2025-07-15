@@ -70,8 +70,23 @@ class OtpVerification extends Component
             // Mark user as verified
             $user->update(['is_verified' => true]);
             
-            return toastr()->success('تم التحقق بنجاح!');
-            // redirect()->route('dashboard')->with('success', 'تم التحقق بنجاح!');
+            
+        $referer = request()->header('Referer');
+
+        if (str_contains($referer, 'customer/auth/otp-verification')) 
+            {
+             toastr()->success('تم التحقق بنجاح!');
+            return redirect()->route('customer.dashboard');
+            } 
+            elseif (str_contains($referer, 'lawyer/auth/otp-verification')) 
+                {
+                     toastr()->success('تم التحقق بنجاح!');
+                    return redirect()->route('lawyer.dashboard');
+                } 
+                else {
+                     toastr()->success('تم التحقق بنجاح!');
+                    return redirect()->route('edara.dashboard');
+                }
         }
 
         $this->addError('otp', 'رمز التحقق غير صحيح أو منتهي الصلاحية.');

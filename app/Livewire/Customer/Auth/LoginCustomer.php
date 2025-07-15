@@ -35,8 +35,9 @@ class LoginCustomer extends Component
     public function mount()
     {
         if (Auth::check()) {
-            toastr()->warning('أنت مسجل دخول بالفعل.');
-            return redirect()->route('customer.dashboard');
+                toastr()->warning('أنت مسجل دخول بالفعل.');
+                return redirect()->route('customer.dashboard');
+            
         }
     }
 
@@ -81,11 +82,10 @@ class LoginCustomer extends Component
             }
 
             if (!$user->is_verified) {
-                if ($this->sendOtp($user)) {
-                    toastr()->success('تم إرسال رمز التحقق إلى رقم هاتفك. يرجى التحقق منه.');
-                    return redirect()->route('edara.otp-verification');
-                }
-                return back()->with('error', 'فشل إرسال رمز التحقق، يرجى المحاولة مرة أخرى.');
+                Auth::logout();
+                    toastr()->success('يرجى التحقق من هاتفك');
+                    return redirect()->route('customer.reset-password');
+                
             }
 
             toastr()->success('تم تسجيل الدخول بنجاح.');

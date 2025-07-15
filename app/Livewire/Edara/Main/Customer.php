@@ -134,6 +134,11 @@ class Customer extends Component
             $data['password'] = Hash::make($this->password);
         }
 
+        $existingPhone = User::where('phone', $phoneNumber)->exists();
+        if ($existingPhone) {
+            return toastr()->error('رقم الهاتف مستخدم مسبقاً.');
+        }
+        
         $user = User::updateOrCreate(['id' => $this->customerId], $data);
 
         if($user){

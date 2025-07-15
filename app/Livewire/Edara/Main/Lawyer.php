@@ -26,7 +26,7 @@ class Lawyer extends Component
         return [
             'name' => 'required|string|max:255',
             'email' => ['nullable', 'email', Rule::unique('users')->ignore($this->lawyerId)],
-            'phone' => 'required|string|max:20',
+            'phone' => ['required', Rule::unique('users', 'phone')->ignore($this->lawyerId)],
             'address' => 'required|string|max:255',
             'password' => 'required_if:lawyerId,null|string|min:8|nullable',
             'active_at' => 'required|date',
@@ -40,6 +40,7 @@ class Lawyer extends Component
             'email.email' => 'البريد الإلكتروني غير صالح',
             'email.unique' => 'هذا البريد الإلكتروني مستخدم بالفعل',
             'phone.required' => 'رقم الهاتف مطلوب',
+            'phone.unique' => 'رقم الهاتف مستخدم بالفعل',
             'address.required' => 'العنوان مطلوب',
             'password.required_if' => 'كلمة المرور مطلوبة عند إضافة محامي جديد',
             'password.min' => 'يجب أن تكون كلمة المرور على الأقل 8 أحرف',
@@ -110,15 +111,18 @@ class Lawyer extends Component
 
     public function store()
     {
-        $this->validate();
+        
         $phoneNumber = (new PhoneCleanerHelper($this->phone))->clean();
         if ($phoneNumber == false) {
             return toastr()->error('رقم الهاتف غير صحيح.');
         }
+
+        $this->phone = $phoneNumber;
+        $this->validate();
         $data = [
             'name' => $this->name,
             'email' => $this->email,
-            'phone' => $phoneNumber,
+            'phone' => $this->phone,
             'address' => $this->address,
             'active_at' => $this->active_at,
             'expired_at' => $this->expired_at,

@@ -60,9 +60,9 @@
             <!-- User Profile Card -->
             <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex items-center space-x-3 rtl:space-x-reverse">
-                    {{-- <img class="h-10 w-10 rounded-full" src="https://ui-avatars.com/api/?name={{Auth::user()->name}}&background=22c55e&color=fff" alt="Profile">
+                    <img class="h-10 w-10 rounded-full" src="https://ui-avatars.com/api/?name={{Auth::user()->name}}&background=22c55e&color=fff" alt="Profile">
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{Auth::user()->name}}</p> --}}
+                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{Auth::user()->name}}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">محامي</p>
                         
                     </div>

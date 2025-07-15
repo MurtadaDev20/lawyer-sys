@@ -5,6 +5,7 @@ namespace App\Livewire\Lawery\Main;
 use Carbon\Carbon;
 use App\Models\User;
 use Livewire\Component;
+use App\Traits\SendsOtp;
 use Livewire\WithPagination;
 use App\Models\CustomerLawyer;
 use Livewire\Attributes\Title;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 
 class CustomerManage extends Component
 {
+    use SendsOtp;
     #[Layout('components.layouts.lawyer.app')] 
     #[Title('إدارة العملاء')]
 
@@ -28,11 +30,17 @@ class CustomerManage extends Component
     public $isModalOpen = false;
     public $search = '';
 
-    public function rules(){
+    public function rules()
+    {
         return [
             'name' => 'required|string|max:255',
             'email' => ['nullable', 'email', Rule::unique('users')->ignore($this->customerId)],
-            'phone' => 'required|string|max:20',
+            'phone' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('users', 'phone')->ignore($this->customerId),
+            ],
             'address' => 'required|string|max:255',
             'password' => 'required_if:customerId,null|string|min:8|nullable',
         ];
@@ -45,6 +53,7 @@ class CustomerManage extends Component
             'email.email' => 'البريد الإلكتروني غير صالح',
             'email.unique' => 'هذا البريد الإلكتروني مستخدم بالفعل',
             'phone.required' => 'رقم الهاتف مطلوب',
+            'phone.unique' => 'رقم الهاتف مستخدم بالفعل',
             'address.required' => 'العنوان مطلوب',
             'password.required_if' => 'كلمة المرور مطلوبة عند إضافة محامي جديد',
             'password.min' => 'يجب أن تكون كلمة المرور على الأقل 8 أحرف',
@@ -104,45 +113,60 @@ class CustomerManage extends Component
     }
 
     public function store()
-    {
-        $this->validate();
-        $phoneNumber = (new PhoneCleanerHelper($this->phone))->clean();
-        if ($phoneNumber == false) {
-            return toastr()->error('رقم الهاتف غير صحيح.');
-        }
-        $data = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'is_active' => true,
-            'phone' => $phoneNumber,
-            'address' => $this->address,
-        ];
+{
+    $this->validate();
 
-        
-        if ($this->password) {
-            $data['password'] = Hash::make($this->password);
-        }
+    $phoneNumber = (new PhoneCleanerHelper($this->phone))->clean();
+    if ($phoneNumber == false) {
+        return toastr()->error('رقم الهاتف غير صحيح.');
+    }
 
-        $user = User::updateOrCreate(['id' => $this->customerId], $data);
+    // Optional: replace original phone value for consistency
+    $this->phone = $phoneNumber;
 
-        if($user){
-            $datacustlawer = [
-            'lawyer_id' => Auth::user()->id, 
-        ];
-        $customerLawyer = CustomerLawyer::updateOrCreate(
+    $data = [
+        'name' => $this->name,
+        'email' => $this->email,
+        'is_active' => true,
+        'phone' => $phoneNumber,
+        'address' => $this->address,
+    ];
+
+    if ($this->password) {
+        $data['password'] = Hash::make($this->password);
+    }
+
+    if (!$this->customerId) {
+    $existingPhone = User::where('phone', $phoneNumber)->exists();
+    if ($existingPhone) {
+        return toastr()->error('رقم الهاتف مستخدم مسبقاً.');
+    }
+}
+    // Create or update user
+    $user = User::updateOrCreate(['id' => $this->customerId], $data);
+
+    if ($user) {
+        // Create or update customer-lawyer relation
+        CustomerLawyer::updateOrCreate(
             ['customer_id' => $user->id],
-            $datacustlawer
+            ['lawyer_id' => Auth::id()]
         );
-        }
-        // Assign lawyer role if not already assigned
+
+        // Assign Customer role if not assigned
         if (!$user->hasRole('Customer')) {
             $user->assignRole('Customer');
         }
 
-        toastr()->success( 'تم إضافة العميل بنجاح');
+        // Send OTP
+        // $this->sendOtp($user);
+
+        toastr()->success('تم إضافة العميل بنجاح');
         $this->closeModal();
         $this->resetInputFields();
+    } else {
+        toastr()->error('فشل حفظ العميل، يرجى المحاولة لاحقاً.');
     }
+}
 
     public function edit($id)
     {
