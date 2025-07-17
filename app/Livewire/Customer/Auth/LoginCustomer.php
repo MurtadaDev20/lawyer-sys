@@ -87,9 +87,9 @@ class LoginCustomer extends Component
                     return redirect()->route('customer.reset-password');
                 
             }
-
+             session()->regenerate();
             toastr()->success('تم تسجيل الدخول بنجاح.');
-            return redirect()->route('customer.dashboard');
+            return redirect()->intended(route('customer.dashboard'));
         }
 
         // Failed attempt, increment count
