@@ -163,7 +163,7 @@ class CaseDetails extends Component
         {
             if ($case->customer && $case->customer->phone) 
             {
-                $url = config('app.url') . '/lawyer/files/preview/' . $case->id;
+                $url = config('app.url') . 'customer/case-details/' . $case->id;
 
                 $message = <<<EOT
                 مرحبًا {$case->customer->name} 👋
