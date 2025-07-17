@@ -64,6 +64,7 @@ class LoginCustomer extends Component
         ];
 
         if (Auth::attempt($credentials, $this->remember)) {
+            session()->regenerate();
             RateLimiter::clear($throttleKey); // Reset on success
 
             $user = User::where('phone', $phoneNumber)->first();
@@ -87,7 +88,7 @@ class LoginCustomer extends Component
                     return redirect()->route('customer.reset-password');
                 
             }
-             session()->regenerate();
+            
             toastr()->success('تم تسجيل الدخول بنجاح.');
             return redirect()->intended(route('customer.dashboard'));
         }
