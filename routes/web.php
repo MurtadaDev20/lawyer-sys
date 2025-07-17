@@ -36,7 +36,7 @@ Route::group(['prefix' => 'edara',], function () {
     });
 
     // Admin routes
-    Route::group(['middleware' => ['role:Edara','EnsureEdaraIsAuthenticated']], function () {
+    Route::group(['middleware' => ['EnsureEdaraIsAuthenticated']], function () {
         Route::get('/dashboard', Dashboard::class)->name('edara.dashboard');
         Route::get('/lawyer-manage', Lawyer::class)->name('edara.lawyerManage');
         Route::get('/customer-manage', Customer::class)->name('edara.customerManage');
@@ -53,7 +53,7 @@ Route::group(['prefix' => 'lawyer'], function () {
     });
     // Add more lawyer-specific routes here
 
-    Route::group(['middleware' => ['role:Lawyer','EnsureLawyerIsVerify','EnsureLawyerIsAuthenticated']], function () {
+    Route::group(['middleware' => ['EnsureLawyerIsVerify','EnsureLawyerIsAuthenticated']], function () {
         Route::get('/dashboard', DashboardLawyer::class)->name('lawyer.dashboard');
         Route::get('/archive', Archive::class)->name('lawyer.archive');
         Route::get('/files/{id}', File::class)->name('lawyer.file');
@@ -79,7 +79,7 @@ Route::group(['prefix' => 'customer'], function () {
     });
 
     // Add more customer-specific routes here
-    Route::group(['middleware' => ['role:Customer','EnsureCustomerIsVerify','EnsureCustomerIsAuthenticated']], function () {
+    Route::group(['middleware' => ['EnsureCustomerIsVerify','EnsureCustomerIsAuthenticated']], function () {
         Route::get('/dashboard', DashboardCustomer::class)->name('customer.dashboard');
         Route::get('/casess', CasessCustomer::class)->name('customer.case');
         Route::get('/case-details/{id}', MainCaseDetails::class)->name('customer.case-details');
