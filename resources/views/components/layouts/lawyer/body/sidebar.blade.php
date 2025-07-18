@@ -16,7 +16,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold text-gray-900 dark:text-white">نظام المحاماة</h1>
+                    <h1 class="text-xl font-bold text-gray-900 dark:text-white">ميزان قانوني</h1>
                     <p class="text-sm text-gray-600 dark:text-gray-400">لوحة التحكم</p>
                 </div>
             </div>
