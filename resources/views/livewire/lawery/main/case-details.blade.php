@@ -139,51 +139,99 @@
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div class="bg-white dark:bg-gray-800 rounded-xl md:rounded-2xl p-4 md:p-6 w-full max-w-md">
                 <h2 class="text-lg md:text-xl font-bold mb-4">إضافة مستند جديد</h2>
-                <form wire:submit.prevent="save" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">اسم الملف</label>
-                        <input wire:model.defer="name" type="text" class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm md:text-base">
-                        @error('name') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">المستند</label>
-                        <div class="mt-1 flex justify-center px-4 md:px-6 pt-4 md:pt-5 pb-4 md:pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-lg">
-                            
-                            <div class="space-y-1 text-center w-full">
-                                <input wire:model="fileUploads" multiple id="file-upload" name="file-upload" type="file" class="sr-only">
-                                <label for="file-upload" class="relative cursor-pointer bg-white dark:bg-gray-700 rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none inline-block px-3 py-1">
-                                    رفع الملفات
-                                    <span class="text-xs text-gray-500 dark:text-gray-400">أو اسحب الملفات هنا</span>
-                                    @if ($fileUploads)
-                                        <span class="text-xs text-gray-500 dark:text-gray-400 block mt-1">
-                                            {{ count($fileUploads) }} ملف{{ count($fileUploads) > 1 ? 'ات' : '' }} مرفوع
-                                        </span>
-                                    @endif 
-                                </label>
-                                @error('fileUploads.*') <span class="text-red-600 text-xs block mt-1">{{ $message }}</span> @enderror
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    PNG, JPG, PDF حتى 10MB
-                                </p>
+               <div
+    x-data="{ progress: 0 }"
+    x-on:livewire-upload-start="progress = 0"
+    x-on:livewire-upload-finish="progress = 0"
+    x-on:livewire-upload-error="progress = 0"
+    x-on:livewire-upload-progress="progress = $event.detail.progress"
+>
+    <form wire:submit.prevent="save" class="space-y-4">
+        <!-- اسم الملف -->
+        <div>
+            <label class="block text-sm font-medium mb-1">اسم الملف</label>
+            <input wire:model.defer="name" type="text"
+                   class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm md:text-base">
+            @error('name') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+        </div>
 
-                                @if ($fileUploads)
-                                    <ul class="text-left mt-2 text-xs">
-                                        @foreach ($fileUploads as $upload)
-                                            <li>{{ $upload->getClientOriginalName() }}</li>
-                                        @endforeach
-                                    </ul>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex justify-end space-x-2 mt-6">
-                        <button type="button" wire:click="$set('showAddModal', false)" class="px-3 md:px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm md:text-base">
-                            إلغاء
-                        </button>
-                        <button  type="submit" class="px-3 md:px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm md:text-base">
-                            حفظ
-                        </button>
-                    </div>
-                </form>
+        <!-- المستند -->
+        <div>
+            <label class="block text-sm font-medium mb-1">المستند</label>
+            <div
+                class="mt-1 flex justify-center px-4 md:px-6 pt-4 md:pt-5 pb-4 md:pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-lg">
+                <div class="space-y-1 text-center w-full">
+                    <input wire:model="fileUploads" multiple id="file-upload" name="file-upload" type="file"
+                           class="sr-only">
+                    <label for="file-upload"
+                           class="relative cursor-pointer bg-white dark:bg-gray-700 rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none inline-block px-3 py-1">
+                        رفع الملفات
+                        <span class="text-xs text-gray-500 dark:text-gray-400 block">أو اسحب الملفات هنا</span>
+                        @if ($fileUploads)
+                            <span class="text-xs text-gray-500 dark:text-gray-400 block mt-1">
+                                {{ count($fileUploads) }} ملف{{ count($fileUploads) > 1 ? 'ات' : '' }} مرفوع
+                            </span>
+                        @endif
+                    </label>
+
+                    @error('fileUploads.*')
+                    <span class="text-red-600 text-xs block mt-1">{{ $message }}</span>
+                    @enderror
+
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        PNG, JPG, PDF حتى 10MB
+                    </p>
+
+                    @if ($fileUploads)
+                        <ul class="text-left mt-2 text-xs">
+                            @foreach ($fileUploads as $upload)
+                                <li>{{ $upload->getClientOriginalName() }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <template x-if="progress > 0">
+            <div class="mt-4">
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded h-4 overflow-hidden mb-1">
+                    <div class="bg-primary-600 h-full transition-all duration-300" :style="'width: ' + progress + '%'"></div>
+                </div>
+                <div class="text-right text-xs text-gray-600 dark:text-gray-400" x-text="progress + '%'"></div>
+            </div>
+        </template>
+
+        <!-- Actions -->
+        <div class="flex justify-end space-x-2 mt-6">
+            <button type="button"
+                    wire:click="$set('showAddModal', false)"
+                    class="px-3 md:px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm md:text-base">
+                إلغاء
+            </button>
+
+            <button
+                type="submit"
+                wire:loading.attr="disabled"
+                wire:target="fileUploads, save"
+                class="px-3 md:px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm md:text-base flex items-center gap-2 justify-center"
+            >
+                <!-- Spinner -->
+                <svg wire:loading wire:target="fileUploads, save"
+                     class="w-4 h-4 animate-spin text-white"
+                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                            stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span>حفظ</span>
+            </button>
+        </div>
+    </form>
+</div>
+
             </div>
         </div>
         @endif
